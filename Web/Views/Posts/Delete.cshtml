@@ -1,0 +1,32 @@
+﻿@model Post
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHost
+
+@{
+    string filePath = System.IO.Path.Combine(_webHost.WebRootPath, Model.Image.TrimStart('~', '/'));
+    if (!System.IO.File.Exists(filePath))
+    {
+        Model.Image = "Images/default.png";
+    }
+}
+
+<div class="row justify-content-center">
+    <h3>Delete Post</h3>
+    <p>Do u want to Delete This Post</p>
+    <div class="card">
+        <div class="card-body">
+            <img src="~/@Model.Image" alt="img" class="w-25"/> 
+
+            <h5 class="card-title">@Model.Title</h5>
+            <p class="card-text">@Model.Content</p>
+            
+        </div>
+    </div>
+    <a asp-controller="Posts" asp-action="Index" class="btn btn-primary mt-1">Go to List</a>
+
+</div>
+
+<form asp-action="Delete" method="post" class="text-center my-3">
+    <input type="hidden" asp-for="Id" /> 
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-primary">Cancel</a>
+</form>

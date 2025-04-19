@@ -1,0 +1,120 @@
+﻿@* @model List<Post> *@
+@* <h1>Posts</h1> *@
+@* <a asp-controller="Posts" asp-action="Create" class="btn btn-primary my-3">Create</a> *@
+
+@* <table class="table-bordered table-hover text-center w-100"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>Id</th> *@
+@*             <th>Title</th> *@
+@*             <th>Content</th> *@
+@*             <th>Created</th> *@
+@*             <th>Actions</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach(var post in Model) *@
+@*         { *@
+@*             <tr> *@
+@*                 <td>@post.Id</td> *@
+@*                 <td>@post.Title</td> *@
+@*                 <td>@post.Content</td> *@
+@*                 <td>@post.CreatedAt</td> *@
+@*                 <td> *@
+@*                     <a asp-controller="Posts" asp-action="Edit" asp-route-Id="@post.Id" class="btn btn-warning" >Edite</a> *@
+@*                     <a asp-controller="Posts" asp-action="Details" asp-route-Id="@post.Id" class="btn btn-primary" >Details</a> *@
+@*                     <a asp-controller="Posts" asp-action="Delete" asp-route-Id="@post.Id" class="btn btn-danger" >Delete</a> *@
+@*                     @* @Html.ActionLink("Edit","Update","Posts"); *@ 
+@*                     @* Url.Action("update","Posts"); *@ 
+@*                 </td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@
+
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHost
+@using System.IO
+@model List<Post>
+
+@{
+    ViewData["Title"] = "Posts";
+}
+
+
+<!-- Latest Posts Section -->
+<section id="latest-posts" class="latest-posts section">
+
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Latest Posts</h2>
+        <div><span>Check Our</span> <span class="description-title">Latest Posts</span></div>
+    </div><!-- End Section Title -->
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="text-center my-2">
+            <a asp-action="Index"  class="rounded p-2 text-white bg-danger badage bg-primary me-2">All</a>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <a asp-action="Index" asp-route-categoryId="@category.Id" class="rounded p-2 text-white bg-danger badage bg-primary me-2">@category.Name</a>
+            }
+        </div>
+        @* commit  => savechanges*@
+        @if (!Model.Any())
+        {
+            <div class="alert alert-danger my-4 text-center" role="alert">
+                No Posts Found for this category
+            </div>
+            
+        }
+        <div class="row gy-4">
+            @foreach(var post in Model)
+            {
+                <div class="col-lg-4">
+                    <article>
+                        @{
+                            string filePath = System.IO.Path.Combine(_webHost.WebRootPath, post.Image.TrimStart('~', '/'));
+                            if (!System.IO.File.Exists(filePath))
+                            {
+                                post.Image = "Images/default.png";
+                            }
+                        
+                        
+                        }
+                    <div class="post-img position-relative">
+                            <img src="@post.Image" alt="img" class="img-fluid">
+                       <div class="position-absolute top-0 end-0 mt-2 me-2">
+                                <a asp-action="Edit" asp-Route-Id="@post.Id" class="btn btn-warning text-light"><i class="bi bi-pencil"></i></a>
+                                <a asp-action="Delete" asp-Route-Id="@post.Id" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                       </div>
+                    </div>
+
+                    <p class="post-category">@post.Category.Name</p>
+
+                    <h2 class="title">
+                        <a href="blog-details.html">@post.Title</a>
+                    </h2>
+                    <p>@post.Content</p>
+
+                    <div class="d-flex align-items-center">
+                        <img src="~/assets/img/person/person-f-12.webp" alt="" class="img-fluid post-author-img flex-shrink-0">
+                        <div class="post-meta">
+                            <p class="post-author">Maria Doe</p>
+                            <p class="post-date">
+                                @post.CreatedAt
+                            </p>
+                            <a asp-action="Details" asp-route-Id="@post.Id">More...</a>
+                        </div>
+                    </div>
+
+                </article>
+            </div><!-- End post list item -->
+                
+            }
+
+           
+
+        </div>
+    </div>
+
+</section><!-- /Latest Posts Section -->
+                            
